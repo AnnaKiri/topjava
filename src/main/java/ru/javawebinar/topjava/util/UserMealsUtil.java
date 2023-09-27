@@ -31,6 +31,8 @@ public class UserMealsUtil {
         mealsTo2.forEach(System.out::println);
 
         System.out.println(filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
+
+        System.out.println(filteredByOneStream(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
@@ -56,7 +58,6 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-
         Map<LocalDate, Integer> caloriesMap = meals.stream()
                 .collect(Collectors.groupingBy(UserMeal::getDate,
                         Collectors.summingInt(UserMeal::getCalories)));
@@ -89,9 +90,34 @@ public class UserMealsUtil {
         return filteredMeals;
     }
 
+    public static List<UserMealWithExcess> filteredByOneStream(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        class Accumulator {
+            final Map<LocalDate, Integer> caloriesMap = new HashMap<>();
+            final List<UserMealWithExcess> filteredMeals = new ArrayList<>();
+
+            void add(UserMeal meal) {
+                LocalDate date = meal.getDate();
+                caloriesMap.merge(date, meal.getCalories(), Integer::sum);
+
+                if (TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime)) {
+                    filteredMeals.add(createNewUserMealWithExcess(meal, new Excess()));
+                }
+            }
+
+            Accumulator combine(Accumulator another) {
+                another.caloriesMap.forEach((date, cals) -> caloriesMap.merge(date, cals, Integer::sum));
+                filteredMeals.addAll(another.filteredMeals);
+                return this;
+            }
+        }
+
+        return meals.stream().collect(Collector.of(Accumulator::new, Accumulator::add, Accumulator::combine, acc -> {
+                acc.filteredMeals.forEach(element -> element.getExcess().setFlag(acc.caloriesMap.get(element.getDate()) > caloriesPerDay));
+                return acc.filteredMeals;
+        }));
+    }
+
     private static UserMealWithExcess createNewUserMealWithExcess(UserMeal userMeal, Excess excess) {
         return new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), excess);
     }
 }
-
-
