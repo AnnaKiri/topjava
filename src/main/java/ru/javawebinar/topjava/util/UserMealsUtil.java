@@ -84,9 +84,7 @@ public class UserMealsUtil {
             }
 
             Accumulator combine(Accumulator another) {
-                another.dailyCaloriesMap.forEach((date, cals) -> dailyCaloriesMap.merge(date, cals, Integer::sum));
-                filteredMeals.addAll(another.filteredMeals);
-                return this;
+                throw new UnsupportedOperationException("Parallel stream not supported for this operation.");
             }
         }
 
@@ -112,10 +110,7 @@ public class UserMealsUtil {
         int caloriesForDay = dailyCaloriesMap.merge(date, meal.getCalories(), Integer::sum);
 
         AtomicBoolean excessFlagForDay = excessMap.computeIfAbsent(date, key -> new AtomicBoolean(caloriesForDay > caloriesPerDay));
-
-        if (!excessFlagForDay.get() && caloriesForDay > caloriesPerDay) {
-            excessMap.get(date).set(true);
-        }
+        excessFlagForDay.compareAndSet(false, caloriesForDay > caloriesPerDay);
 
         if (TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime)) {
             filteredMeals.add(createNewUserMealWithExcess(meal, excessMap.get(date)));
