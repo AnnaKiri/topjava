@@ -109,7 +109,7 @@ public class UserMealsUtil {
         int caloriesForDay = dailyCaloriesMap.merge(date, meal.getCalories(), Integer::sum);
         boolean excessFlag = caloriesForDay > caloriesPerDay;
         AtomicBoolean excessFlagForDay = excessMap.computeIfAbsent(date, key -> new AtomicBoolean(excessFlag));
-        excessFlagForDay.compareAndSet(false, caloriesForDay > caloriesPerDay);
+        excessFlagForDay.compareAndSet(false, excessFlag);
 
         if (TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime)) {
             filteredMeals.add(createNewUserMealWithExcess(meal, excessFlagForDay));
