@@ -38,12 +38,4 @@ public class UserMealWithExcess {
                 ", excess=" + excess.get() +
                 '}';
     }
-
-    public AtomicBoolean getExcess() {
-        return excess;
-    }
-
-    public LocalDate getDate() {
-        return dateTime.toLocalDate();
-    }
 }
