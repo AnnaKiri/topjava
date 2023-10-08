@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class MealsUtil {
     public static final int CALORIES_PER_DAY = 2000;
+    public static final int UNKNOWN_ID = 0;
     public static final List<Meal> meals = new ArrayList<>();
 
     static {
