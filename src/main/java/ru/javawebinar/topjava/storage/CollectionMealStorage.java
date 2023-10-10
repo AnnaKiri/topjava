@@ -20,8 +20,8 @@ public class CollectionMealStorage implements Storage<Meal> {
     }
 
     @Override
-    public void update(Meal meal) {
-        storage.replace(meal.getId(), meal);
+    public Meal update(Meal meal) {
+        return storage.replace(meal.getId(), meal);
     }
 
     @Override

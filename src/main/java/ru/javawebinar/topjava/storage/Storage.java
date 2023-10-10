@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Storage<T> {
 
-    void update(T object);
+    T update(T object);
 
     T create(T object);
 

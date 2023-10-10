@@ -21,7 +21,7 @@
     <c:forEach items="${meals}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
         <tr style="color: ${meal.excess ? '#dc3545' : '#28a745'};">
-            <td>${DateUtil.format((meal.dateTime))}</td>
+            <td>${DateUtil.format(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
             <td><a href="meals?id=${meal.id}&action=edit">Update</a></td>

@@ -17,8 +17,7 @@
     <input type="hidden" name="id" value="${meal.id}">
     <dl>
         <dt>Date/Time:</dt>
-        <input type="datetime-local" name="dateTime"
-               value="${meal.id == null ? DateUtil.format(LocalDateTime.now()) : meal.dateTime}">
+        <input type="datetime-local" name="dateTime" value="${meal.dateTime}">
     </dl>
     <dl>
         <dt>Description:</dt>
@@ -26,7 +25,7 @@
     </dl>
     <dl>
         <dt>Calories:</dt>
-        <input type="text" name="calories" value="${meal.calories}" pattern="[0-9]*">
+        <input type="number" name="calories" value="${meal.calories}">
     </dl>
     <button type="submit">Save</button>
     <button type="button" onclick="window.history.back()">Cancel</button>

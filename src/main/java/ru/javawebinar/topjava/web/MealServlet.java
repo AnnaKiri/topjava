@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -42,11 +43,11 @@ public class MealServlet extends HttpServlet {
         final boolean isCreate = id == null || id.isEmpty();
         if (isCreate) {
             storage.create(meal);
-            log.debug("New meal with id " + meal.getId() + " was created");
+            log.debug("New meal with id {} was created", meal.getId());
         } else {
             meal.setId(Integer.parseInt(id));
             storage.update(meal);
-            log.debug("Meal with id " + meal.getId() + " was updated");
+            log.debug("Meal with id {} was updated", meal.getId());
         }
         response.sendRedirect("meals");
         log.debug("Redirect to meals from doPost");
@@ -65,17 +66,17 @@ public class MealServlet extends HttpServlet {
         switch (action) {
             case "delete":
                 storage.delete(Integer.parseInt(idValue));
-                log.debug("Meal with id " + idValue + " was deleted");
+                log.debug("Meal with id {} was deleted", idValue);
                 response.sendRedirect("meals");
                 log.debug("Redirect to meals from delete case");
                 return;
             case "add":
-                meal = Meal.EMPTY;
+                meal = new Meal(LocalDateTime.now().withSecond(0).withNano(0), "", 0);
                 log.debug("Creation new meal");
                 break;
             case "edit":
                 meal = storage.get(Integer.parseInt(idValue));
-                log.debug("Meal with id " + idValue + " in updating stage");
+                log.debug("Meal with id {} in updating stage", idValue);
                 break;
             default:
                 List<MealTo> mealToList = MealsUtil.filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY);
