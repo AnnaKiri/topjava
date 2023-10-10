@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -71,7 +72,7 @@ public class MealServlet extends HttpServlet {
                 log.debug("Redirect to meals from delete case");
                 return;
             case "add":
-                meal = new Meal(LocalDateTime.now().withSecond(0).withNano(0), "", 0);
+                meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0);
                 log.debug("Creation new meal");
                 break;
             case "edit":
