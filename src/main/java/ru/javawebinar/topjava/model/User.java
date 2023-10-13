@@ -3,10 +3,14 @@ package ru.javawebinar.topjava.model;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.concurrent.CompletionService;
 
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
-public class User extends AbstractNamedEntity {
+public class User extends AbstractNamedEntity{
+
+    public static final Comparator<User> USER_COMPARATOR =
+            Comparator.comparing(User::getName).thenComparing(User::getId);
 
     private String email;
 
