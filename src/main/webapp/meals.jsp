@@ -42,19 +42,19 @@
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt>From date (inclusive)</dt>
-            <dd><input type="date" name="startDate" required></dd>
+            <dd><input type="date" name="startDate"></dd>
         </dl>
         <dl>
             <dt>To date (inclusive)</dt>
-            <dd><input type="date" name="endDate" required></dd>
+            <dd><input type="date" name="endDate"></dd>
         </dl>
         <dl>
             <dt>From time (inclusive)</dt>
-            <dd><input type="time" name="startTime" required></dd>
+            <dd><input type="time" name="startTime"></dd>
         </dl>
         <dl>
             <dt>To time (exclusive)</dt>
-            <dd><input type="time" name="endTime" required></dd>
+            <dd><input type="time" name="endTime"></dd>
         </dl>
         <button type="submit">Filter</button>
     </form>

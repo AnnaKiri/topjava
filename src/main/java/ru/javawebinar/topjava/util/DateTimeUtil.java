@@ -12,7 +12,7 @@ public class DateTimeUtil {
     }
 
     public static boolean isBetweenDates(LocalDate date, LocalDate startDate, LocalDate endDate) {
-        return Utils.isBetweenHalfOpen(date, startDate, endDate.plusDays(1));
+        return Utils.isBetweenHalfOpen(date, startDate, endDate == LocalDate.MAX ? endDate : endDate.plusDays(1));
     }
 }
 

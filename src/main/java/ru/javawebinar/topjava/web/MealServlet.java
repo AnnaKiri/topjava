@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -68,10 +69,34 @@ public class MealServlet extends HttpServlet {
                 break;
             case "filter":
                 log.info("getFilteredList");
-                LocalDate startDate = LocalDate.parse(request.getParameter("startDate"));
-                LocalDate endDate = LocalDate.parse(request.getParameter("endDate"));
-                LocalTime startTime = LocalTime.parse(request.getParameter("startTime"));
-                LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
+                LocalDate startDate;
+                LocalDate endDate;
+                LocalTime startTime;
+                LocalTime endTime;
+                try {
+                    startDate = LocalDate.parse(request.getParameter("startDate"));
+                } catch (DateTimeParseException e) {
+                    startDate = LocalDate.MIN;
+                }
+
+                try {
+                    endDate = LocalDate.parse(request.getParameter("endDate"));
+                } catch (DateTimeParseException e) {
+                    endDate = LocalDate.MAX;
+                }
+
+                try {
+                    startTime = LocalTime.parse(request.getParameter("startTime"));
+                } catch (DateTimeParseException e) {
+                    startTime = LocalTime.MIN;
+                }
+
+                try {
+                    endTime = LocalTime.parse(request.getParameter("endTime"));
+                } catch (DateTimeParseException e) {
+                    endTime = LocalTime.MAX;
+                }
+
                 request.setAttribute("meals", mealRestController.getFilteredList(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
