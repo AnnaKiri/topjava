@@ -14,6 +14,24 @@ public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
     @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+
+        switch (action == null ? "all" : action) {
+            case "login":
+                int role = Integer.parseInt(request.getParameter("role"));
+                SecurityUtil.setRole(role);
+                break;
+            case "all":
+            default:
+                log.info("getAll");
+                break;
+        }
+        response.sendRedirect("index.html");
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward to users");
         request.getRequestDispatcher("/users.jsp").forward(request, response);
