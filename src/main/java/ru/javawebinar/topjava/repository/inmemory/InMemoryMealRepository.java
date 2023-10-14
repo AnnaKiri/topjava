@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -71,19 +72,19 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Collection<Meal> getAll(int userId) {
         log.info("getAll");
-        return repository.values()
-                .stream()
-                .filter(meal -> meal.getUserId() == userId)
-                .sorted(Meal.MEAL_COMPARATOR)
-                .collect(Collectors.toList());
+        return getFilteredList(meal -> meal.getUserId() == userId);
     }
 
     @Override
-    public Collection<Meal> getFilteredList(LocalDate startDate, LocalDate endDate) {
+    public Collection<Meal> getFilteredListByDate(int userId, LocalDate startDate, LocalDate endDate) {
         log.info("getFilteredList");
+        return getFilteredList(meal -> meal.getUserId() == userId && DateTimeUtil.isBetweenDates(meal.getDate(), startDate, endDate));
+    }
+
+    private Collection<Meal> getFilteredList(Predicate<Meal> predicate) {
         return repository.values()
                 .stream()
-                .filter(meal -> DateTimeUtil.isBetweenDates(meal.getDate(), startDate, endDate))
+                .filter(predicate)
                 .sorted(Meal.MEAL_COMPARATOR)
                 .collect(Collectors.toList());
     }
