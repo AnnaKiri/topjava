@@ -20,15 +20,16 @@ public class UserServlet extends HttpServlet {
 
         switch (action == null ? "all" : action) {
             case "login":
-                int role = Integer.parseInt(request.getParameter("role"));
-                SecurityUtil.setRole(role);
+                int userId = Integer.parseInt(request.getParameter("userId"));
+                log.info("login as {}", userId);
+                SecurityUtil.setAuthUserId(userId);
                 break;
             case "all":
             default:
                 log.info("getAll");
                 break;
         }
-        response.sendRedirect("index.html");
+        response.sendRedirect("meals");
     }
 
     @Override

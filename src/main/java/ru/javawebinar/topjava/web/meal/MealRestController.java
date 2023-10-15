@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,7 +20,7 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private MealService service;
 
@@ -33,9 +34,16 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public List<MealTo> getFilteredList(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+    public List<MealTo> getFilteredList(LocalDate startDateInput, LocalDate endDateInput, LocalTime startTimeInput, LocalTime endTimeInput) {
         log.info("getFilteredList");
-        return MealsUtil.getFilteredTos(service.getFilteredList(authUserId(), startDate, endDate), MealsUtil.DEFAULT_CALORIES_PER_DAY, startTime, endTime);
+        LocalDate startDate = startDateInput != null ? startDateInput : LocalDate.MIN;
+        LocalDate endDate = endDateInput != null ? endDateInput : LocalDate.MAX;
+        LocalTime startTime = startTimeInput != null ? startTimeInput : LocalTime.MIN;
+        LocalTime endTime = endTimeInput != null ? endTimeInput : LocalTime.MAX;
+        return MealsUtil.getFilteredTos(service.getFilteredList(authUserId(), startDate, endDate),
+                SecurityUtil.authUserCaloriesPerDay(),
+                startTime,
+                endTime);
     }
 
     public Meal get(int mealId) {
@@ -46,7 +54,7 @@ public class MealRestController {
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal);
+        return service.create(meal, authUserId());
     }
 
     public void delete(int mealId) {
@@ -57,6 +65,6 @@ public class MealRestController {
     public void update(Meal meal, int mealId) {
         log.info("update {} with id={}", meal, mealId);
         assureIdConsistent(meal, mealId);
-        service.update(meal);
+        service.update(meal, authUserId());
     }
 }
