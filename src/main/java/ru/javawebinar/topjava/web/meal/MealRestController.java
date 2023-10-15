@@ -21,8 +21,7 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 @Controller
 public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private MealService service;
+    private final MealService service;
 
     @Autowired
     public MealRestController(MealService service) {
@@ -34,12 +33,12 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public List<MealTo> getFilteredList(LocalDate startDateInput, LocalDate endDateInput, LocalTime startTimeInput, LocalTime endTimeInput) {
+    public List<MealTo> getFilteredList(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("getFilteredList");
-        LocalDate startDate = startDateInput != null ? startDateInput : LocalDate.MIN;
-        LocalDate endDate = endDateInput != null ? endDateInput : LocalDate.MAX;
-        LocalTime startTime = startTimeInput != null ? startTimeInput : LocalTime.MIN;
-        LocalTime endTime = endTimeInput != null ? endTimeInput : LocalTime.MAX;
+        startDate = startDate != null ? startDate : LocalDate.MIN;
+        endDate = endDate != null ? endDate : LocalDate.MAX;
+        startTime = startTime != null ? startTime : LocalTime.MIN;
+        endTime = endTime != null ? endTime : LocalTime.MAX;
         return MealsUtil.getFilteredTos(service.getFilteredList(authUserId(), startDate, endDate),
                 SecurityUtil.authUserCaloriesPerDay(),
                 startTime,
