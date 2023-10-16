@@ -11,8 +11,6 @@ import ru.javawebinar.topjava.web.user.AdminRestController;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
-
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 automatic resource management (ARM)
@@ -23,7 +21,7 @@ public class SpringMain {
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
 
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
-            mealRestController.create(new Meal(LocalDateTime.now(), "Ужин", 500, authUserId()));
+            mealRestController.create(new Meal(LocalDateTime.now(), "Ужин", 500));
         }
     }
 }
