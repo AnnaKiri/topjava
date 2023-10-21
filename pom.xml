@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.version>5.3.30</spring.version>
+        <postgresql.driver.version>42.6.0</postgresql.driver.version>
 
         <!-- Logging -->
         <logback.version>1.2.12</logback.version>
@@ -137,6 +138,13 @@
             <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.driver.version}</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>

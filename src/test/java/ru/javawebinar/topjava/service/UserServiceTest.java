@@ -40,8 +40,10 @@ public class UserServiceTest {
     public void create() {
         User created = service.create(getNew());
         Integer newId = created.getId();
+
         User newUser = getNew();
         newUser.setId(newId);
+
         assertMatch(created, newUser);
         assertMatch(service.get(newId), newUser);
     }

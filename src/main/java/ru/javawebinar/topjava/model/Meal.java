@@ -44,6 +44,7 @@ public class Meal extends AbstractBaseEntity {
     public void setDescription(String description) {
         this.description = description;
     }
+
     public int getCalories() {
         return calories;
     }
@@ -51,6 +52,7 @@ public class Meal extends AbstractBaseEntity {
     public void setCalories(int calories) {
         this.calories = calories;
     }
+
     public LocalDate getDate() {
         return dateTime.toLocalDate();
     }
