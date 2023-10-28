@@ -1,35 +1,30 @@
 package ru.javawebinar.topjava;
 
-import org.junit.rules.TestRule;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-public class TimingRule implements TestRule {
-    private static Map<String, Long> map = new HashMap<>();
+public class TimingRule extends Stopwatch {
+    private static final Logger log = LoggerFactory.getLogger(TimingRule.class);
+    private static final int OFFSET_TIME_CHAR = 30;
+
+    private static Map<String, Long> report = new LinkedHashMap<>();
 
     @Override
-    public Statement apply(Statement base, Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                long startTime = System.currentTimeMillis();
-                try {
-                    base.evaluate();
-                } finally {
-                    long endTime = System.currentTimeMillis();
-                    long duration = endTime - startTime;
-                    map.put(description.getMethodName(), duration);
-                    System.out.println("The test '" + description.getMethodName() + "' was completed during " + duration + " milliseconds");
-                }
-            }
-        };
+    protected void succeeded(long nanos, Description description) {
+        long durationMillis = TimeUnit.NANOSECONDS.toMillis(nanos);
+        report.put(description.getMethodName(), durationMillis);
+        log.info("The test {} took {} ms", description.getMethodName(), durationMillis);
     }
 
     public static void printSummary() {
-        System.out.println("Test results summary:");
-        map.forEach((key, value) -> System.out.println(key + " " + value));
+        StringBuilder stringBuilder = new StringBuilder("Test results summary:\n");
+        report.forEach((key, value) -> stringBuilder.append(String.format("%-" + OFFSET_TIME_CHAR + "s %s ms\n", key, value)));
+        log.info("\n{}\n", stringBuilder);
     }
 }
