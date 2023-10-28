@@ -18,7 +18,8 @@ import java.time.LocalTime;
 
 })
 @Entity
-@Table(name = "meal")
+@Table(name = "meal",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "uk_user_date"))
 public class Meal extends AbstractBaseEntity {
 
     public static final String DELETE = "Meal.delete";
