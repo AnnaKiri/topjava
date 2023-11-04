@@ -2,12 +2,14 @@ package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
 
 @Repository
+@Transactional(readOnly = true)
 public class DataJpaUserRepository implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
@@ -18,11 +20,13 @@ public class DataJpaUserRepository implements UserRepository {
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         return crudRepository.save(user);
     }
 
     @Override
+    @Transactional
     public boolean delete(int id) {
         return crudRepository.delete(id) != 0;
     }
