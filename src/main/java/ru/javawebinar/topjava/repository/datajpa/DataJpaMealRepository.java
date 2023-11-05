@@ -7,9 +7,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Transactional(readOnly = true)
@@ -26,12 +24,13 @@ public class DataJpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        Optional<User> user = crudUserRepository.findById(userId);
-
-        if (user.isEmpty()) {
+        if (!crudUserRepository.existsById(userId)) {
             return null;
         }
-        meal.setUser(user.get());
+
+        User user = crudUserRepository.getReferenceById(userId);
+        meal.setUser(user);
+
         if (meal.isNew()) {
             crudMealRepository.save(meal);
             return meal;
@@ -48,24 +47,19 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        Optional<User> user = crudUserRepository.findById(userId);
-        return user.isPresent() ? crudMealRepository.findByIdAndUser(id, user.get()) : null;
+        User user = crudUserRepository.getReferenceById(userId);
+        return crudMealRepository.findByIdAndUser(id, user);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        Optional<User> user = crudUserRepository.findById(userId);
-        return user.isPresent() ? crudMealRepository.findAllByUserOrderByDateTimeDesc(user.get()) : new ArrayList<>();
-
+        User user = crudUserRepository.getReferenceById(userId);
+        return crudMealRepository.findAllByUserOrderByDateTimeDesc(user);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-//        return crudMealRepository.getBetweenHalfOpen(startDateTime, endDateTime, userId);
-        Optional<User> user = crudUserRepository.findById(userId);
-        return user.isPresent()
-                ? crudMealRepository.findAllByUserAndDateTimeGreaterThanEqualAndDateTimeLessThanOrderByDateTimeDesc(user.get(), startDateTime, endDateTime)
-                : new ArrayList<>();
+        return crudMealRepository.getBetweenHalfOpen(startDateTime, endDateTime, userId);
     }
 
     @Override

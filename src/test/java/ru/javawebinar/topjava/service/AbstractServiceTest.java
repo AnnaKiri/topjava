@@ -27,6 +27,6 @@ public abstract class AbstractServiceTest {
     @AfterClass
     public static void printResult() {
         TimingRule.printResult();
+        TimingRule.clearResults();
     }
-
 }

@@ -25,4 +25,8 @@ public class TimingRule extends Stopwatch {
                 results +
                 "\n---------------------------------");
     }
+
+    public static void clearResults() {
+        results.setLength(0);
+    }
 }

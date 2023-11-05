@@ -30,11 +30,6 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
     }
 
     @Override
-    public User getUserWithMeals(int id) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public User getByEmail(String email) {
         Objects.requireNonNull(email, "email must not be null");
         return getCollection().stream()

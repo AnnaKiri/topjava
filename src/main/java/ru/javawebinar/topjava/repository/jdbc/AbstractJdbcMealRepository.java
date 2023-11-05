@@ -36,7 +36,6 @@ public abstract class AbstractJdbcMealRepository <T> implements MealRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
