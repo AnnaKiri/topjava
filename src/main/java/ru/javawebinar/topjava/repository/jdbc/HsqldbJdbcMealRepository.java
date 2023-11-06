@@ -12,9 +12,9 @@ import static ru.javawebinar.topjava.Profiles.HSQL_DB;
 
 @Repository
 @Profile(HSQL_DB)
-public class HsqdbJdbcMealRepository extends AbstractJdbcMealRepository<Timestamp> {
+public class HsqldbJdbcMealRepository extends AbstractJdbcMealRepository<Timestamp> {
 
-    public HsqdbJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public HsqldbJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
