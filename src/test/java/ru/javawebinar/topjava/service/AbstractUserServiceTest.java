@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.UserTestData;
@@ -35,12 +36,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     Environment env;
 
     @Autowired
+    @Lazy
     protected JpaUtil jpaUtil;
 
     @Before
     public void setup() {
         cacheManager.getCache("users").clear();
-        jpaUtil.clear2ndLevelHibernateCache();
+        if (!isJdbcActive()) {
+            jpaUtil.clear2ndLevelHibernateCache();
+        }
     }
 
     @Test
@@ -102,12 +106,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void createWithException() throws Exception {
-        boolean isJdbcActive = Arrays.asList(env.getActiveProfiles()).contains(JDBC);
-        Assume.assumeFalse(isJdbcActive);
+        Assume.assumeFalse(isJdbcActive());
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 9, true, new Date(), Set.of())));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", 10001, true, new Date(), Set.of())));
+    }
+
+    private boolean isJdbcActive() {
+        return Arrays.asList(env.getActiveProfiles()).contains(JDBC);
     }
 }
