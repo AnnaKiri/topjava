@@ -65,7 +65,7 @@ public class JdbcUserRepository implements UserRepository {
             }
             jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", user.id());
         }
-        if (!batchInsertRoles(new ArrayList<>(user.getRoles()), user.id())) {
+        if (!batchInsertRoles(List.copyOf(user.getRoles()), user.id())) {
             return null;
         }
         return user;
@@ -122,7 +122,6 @@ public class JdbcUserRepository implements UserRepository {
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         ps.setInt(1, userId);
                         ps.setString(2, roles.get(i).name());
-
                     }
 
                     public int getBatchSize() {
