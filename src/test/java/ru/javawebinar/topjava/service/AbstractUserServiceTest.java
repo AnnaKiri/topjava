@@ -7,6 +7,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -21,8 +22,10 @@ import java.util.Set;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.Profiles.JDBC;
+import static ru.javawebinar.topjava.Profiles.NOCACHE;
 import static ru.javawebinar.topjava.UserTestData.*;
 
+@ActiveProfiles(NOCACHE)
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
