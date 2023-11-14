@@ -10,7 +10,7 @@
     <hr>
     <h2><spring:message code="${meal.id == null ? 'meal.addMeal' : 'meal.update'}"/></h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <form method="post" action="create">
+    <form method="post" action="">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.dateTime"/></dt>

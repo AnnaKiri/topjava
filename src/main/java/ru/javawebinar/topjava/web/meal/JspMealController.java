@@ -1,6 +1,5 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,26 +24,25 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 @Controller
 @RequestMapping("/meals")
 public class JspMealController extends AbstractMealController {
-    private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
-
     public JspMealController(MealService service) {
-        super(service);
+        super(service, LoggerFactory.getLogger(JspMealController.class));
     }
 
     @GetMapping
-    public String getAll(HttpServletRequest request, Model model) {
+    public String getAll(Model model) {
+        log.info("all meals");
+        model.addAttribute("meals", super.getAll());
+        return "meals";
+    }
+
+    @GetMapping("/filter")
+    public String getFilteredMeals(HttpServletRequest request, Model model) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
         LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
         LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
-
-        if (startDate == null && endDate == null && startTime == null && endTime == null) {
-            log.info("all meals");
-            model.addAttribute("meals", super.getAll());
-        } else {
-            log.info("filtered meals");
-            model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
-        }
+        log.info("filtered meals");
+        model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
         return "meals";
     }
 
@@ -55,8 +53,8 @@ public class JspMealController extends AbstractMealController {
         return "mealForm";
     }
 
-    @PostMapping("/create")
-    public String saveOrUpdate(HttpServletRequest request) {
+    @PostMapping
+    public String createOrUpdate(HttpServletRequest request) {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),

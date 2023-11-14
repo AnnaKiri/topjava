@@ -101,17 +101,19 @@ public class JdbcUserRepository implements UserRepository {
             int counter = 0;
             while (rs.next()) {
                 int userId = rs.getInt("id");
-                if (!users.containsKey(userId)) {
-                    users.put(userId, ROW_MAPPER.mapRow(rs, counter));
-                    users.get(userId).setRoles(new HashSet<>());
+                User user = users.get(userId);
+                if (user == null) {
+                    user = ROW_MAPPER.mapRow(rs, counter);
+                    user.setRoles(new HashSet<>());
+                    users.put(userId, user);
                 }
                 String role = rs.getString("role");
                 if (StringUtils.hasLength(role)) {
-                    users.get(userId).getRoles().add(Role.valueOf(role));
+                    user.getRoles().add(Role.valueOf(role));
                 }
                 counter++;
             }
-            return users.values().stream().toList();
+            return new ArrayList<>(users.values());
         }
     }
 
