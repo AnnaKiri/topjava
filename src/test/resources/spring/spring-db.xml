@@ -94,7 +94,7 @@
                     <entry key="#{T(org.hibernate.cache.jcache.ConfigSettings).PROVIDER}"
                            value="org.ehcache.jsr107.EhcacheCachingProvider"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}"
-                           value="true"/>
+                           value="false"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}"
                            value="false"/> <!--default-->
                     <!--
