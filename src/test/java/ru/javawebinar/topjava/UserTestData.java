@@ -27,7 +27,7 @@ public class UserTestData {
     }
 
     public static User getNewWithRoles() {
-        User user = new User(getNewWithoutRoles());
+        User user = getNewWithoutRoles();
         user.setRoles(roles);
         return user;
     }
