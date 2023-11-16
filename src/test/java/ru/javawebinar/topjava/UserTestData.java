@@ -22,28 +22,29 @@ public class UserTestData {
 
     public static final Set<Role> roles = Set.of(Role.USER, Role.ADMIN);
 
-    public static User getNew() {
-        return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), roles);
+    public static User getNewWithoutRoles() {
+        return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), null);
     }
 
-    public static User getUpdated() {
-        User updated = new User(guest);
+    public static User getNewWithRoles() {
+        User user = new User(getNewWithoutRoles());
+        user.setRoles(roles);
+        return user;
+    }
+
+    public static User getUpdatedWithRoles() {
+        User updated = new User(admin);
         updated.setEmail("update@gmail.com");
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
         updated.setPassword("newPass");
         updated.setEnabled(false);
-        updated.setRoles(roles);
         return updated;
     }
 
     public static User getUpdatedWithoutRoles() {
-        User updated = new User(guest);
-        updated.setEmail("update@gmail.com");
-        updated.setName("UpdatedName");
-        updated.setCaloriesPerDay(330);
-        updated.setPassword("newPass");
-        updated.setEnabled(false);
+        User updated = getUpdatedWithRoles();
+        updated.setRoles(null);
         return updated;
     }
 }

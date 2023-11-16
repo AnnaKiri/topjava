@@ -5,5 +5,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title><spring:message code="app.title"/></title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
+    <base href="http://localhost:8080/topjava/">
+    <link rel="stylesheet" href="resources/css/style.css">
 </head>
