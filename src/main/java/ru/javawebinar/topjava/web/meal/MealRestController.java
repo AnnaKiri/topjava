@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.meal;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.formatter.CustomDateTimeFormat;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -45,14 +44,11 @@ public class MealRestController extends AbstractMealController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<MealTo>> getBetween(
-            @RequestParam(value = "startDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
-            @RequestParam(value = "endDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
-
-        LocalDate startDate = startDateTime.toLocalDate();
-        LocalTime startTime = startDateTime.toLocalTime();
-        LocalDate endDate = endDateTime.toLocalDate();
-        LocalTime endTime = endDateTime.toLocalTime();
+    public ResponseEntity<List<MealTo>> getBetweenDateTime(
+            @RequestParam(value = "startDate", required = false) @CustomDateTimeFormat(type = CustomDateTimeFormat.Type.START_DATE) LocalDate startDate,
+            @RequestParam(value = "startTime", required = false) @CustomDateTimeFormat(type = CustomDateTimeFormat.Type.START_TIME) LocalTime startTime,
+            @RequestParam(value = "endDate", required = false) @CustomDateTimeFormat(type = CustomDateTimeFormat.Type.END_DATE) LocalDate endDate,
+            @RequestParam(value = "endTime", required = false) @CustomDateTimeFormat(type = CustomDateTimeFormat.Type.END_TIME) LocalTime endTime) {
 
         List<MealTo> meals = super.getBetween(startDate, startTime, endDate, endTime);
         return ResponseEntity.ok(meals);

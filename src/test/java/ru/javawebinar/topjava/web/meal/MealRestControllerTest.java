@@ -14,7 +14,6 @@ import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -74,8 +73,10 @@ public class MealRestControllerTest extends AbstractControllerTest {
         List<MealTo> expectedMeals = List.of(mealTo2, mealTo1);
 
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
-                .param("startDateTime", startDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-                .param("endDateTime", endDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+                .param("startDate", startDateTime.toLocalDate().toString())
+                .param("endDate", endDateTime.toLocalDate().toString())
+                .param("startTime", startDateTime.toLocalTime().toString())
+                .param("endTime", endDateTime.toLocalTime().toString()))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
