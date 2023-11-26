@@ -45,4 +45,15 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
         USER_MATCHER.assertMatch(userService.get(USER_ID), updated);
     }
+
+
+    @Test
+    void getWithMeals() throws Exception {
+        User userWithMeals = getUserWithMeal();
+
+        perform(MockMvcRequestBuilders.get(REST_URL + "/with-meals"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(USER_MATCHER_WITH_MEAL.contentJson(userWithMeals));
+    }
 }
