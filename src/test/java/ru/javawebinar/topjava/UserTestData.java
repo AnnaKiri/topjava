@@ -11,7 +11,7 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals");
-    public static final MatcherFactory.Matcher<User> USER_MATCHER_WITH_MEAL = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals.user");
+    public static final MatcherFactory.Matcher<User> USER_MATCHER_WITH_MEALS = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals.user");
 
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;

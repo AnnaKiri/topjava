@@ -13,7 +13,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -68,15 +67,26 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        LocalDateTime startDateTime = LocalDateTime.of(2020, 1, 30, 10, 0, 0);
-        LocalDateTime endDateTime = LocalDateTime.of(2020, 1, 30, 20, 0, 0);
         List<MealTo> expectedMeals = List.of(mealTo2, mealTo1);
 
         perform(MockMvcRequestBuilders.get(REST_URL + "filter")
-                .param("startDate", startDateTime.toLocalDate().toString())
-                .param("endDate", endDateTime.toLocalDate().toString())
-                .param("startTime", startDateTime.toLocalTime().toString())
-                .param("endTime", endDateTime.toLocalTime().toString()))
+                .param("startDate", "2020-01-30")
+                .param("endDate", "2020-01-30")
+                .param("startTime", "10:00:00")
+                .param("endTime", "20:00:00"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEALTO_MATCHER.contentJson(expectedMeals));
+    }
+
+    @Test
+    void getBetweenWithEmptyParams() throws Exception {
+        List<MealTo> expectedMeals = List.of(mealTo7, mealTo6, mealTo5, mealTo4, mealTo3, mealTo2, mealTo1);
+
+        perform(MockMvcRequestBuilders.get(REST_URL + "filter")
+                .param("startDate", "")
+                .param("endTime", ""))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

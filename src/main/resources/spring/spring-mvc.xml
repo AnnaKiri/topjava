@@ -28,13 +28,14 @@
     <!--  all resources inside folder src/main/webapp/resources are mapped so they can be referred to inside JSP files -->
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
-    <bean id="customDateTimeFormatAnnotationFormatterFactory"
-          class="ru.javawebinar.topjava.util.formatter.CustomDateTimeFormatAnnotationFormatterFactory"/>
+    <bean id="customDateFormatter" class="ru.javawebinar.topjava.util.formatter.LocalDateFormatter"/>
+    <bean id="customTimeFormatter" class="ru.javawebinar.topjava.util.formatter.LocalTimeFormatter"/>
 
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="formatters">
             <set>
-                <ref bean="customDateTimeFormatAnnotationFormatterFactory"/>
+                <ref bean="customDateFormatter"/>
+                <ref bean="customTimeFormatter"/>
             </set>
         </property>
     </bean>
