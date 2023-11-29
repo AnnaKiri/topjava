@@ -15,7 +15,6 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 
 @SpringJUnitWebConfig(locations = {
         "classpath:spring/spring-app.xml",
@@ -36,14 +35,14 @@ public abstract class AbstractControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @Autowired
     private Environment env;
 
     public boolean isDataJpaActive() {
-        return Arrays.asList(env.getActiveProfiles()).contains(Profiles.DATAJPA);
+        return env.matchesProfiles(Profiles.DATAJPA);
     }
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @PostConstruct
     private void postConstruct() {
