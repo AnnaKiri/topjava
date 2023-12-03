@@ -48,24 +48,26 @@ $(function () {
     $(".enabled").click(function () {
         enableStatusChange($(this));
     })
+
+    updateRowsOpacity();
 });
 
 function enableStatusChange(checkbox) {
     let id = checkbox.closest('tr').attr("id");
     let value = checkbox.prop('checked');
-
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl + id + "/enable",
         data: "enabled=" + value
     }).done(function () {
-        if (value) {
-            successNoty("Record enabled");
-        } else {
-            successNoty("Record disabled");
-        }
+        updateRowsOpacity();
+        successNoty(value ? "Record enabled" : "Record disabled");
     });
-
 }
 
+function updateRowsOpacity() {
+    $('#datatable .enabled').each(function () {
+        $(this).closest('tr').attr('data-user-enabled', $(this).is(':checked').toString());
+    });
+}
 
