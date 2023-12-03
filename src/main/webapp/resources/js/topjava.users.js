@@ -1,12 +1,9 @@
 const userAjaxUrl = "admin/users/";
 
-// https://stackoverflow.com/a/5064235/548473
-const ctx = {
-    ajaxUrl: userAjaxUrl
-};
-
 // $(document).ready(function () {
 $(function () {
+    ctx.ajaxUrl = userAjaxUrl;
+    ctx.updateTableFunc = updateTable;
     makeEditable(
         $("#datatable").DataTable({
             "paging": false,
@@ -70,4 +67,3 @@ function updateRowsOpacity() {
         $(this).closest('tr').attr('data-user-enabled', $(this).is(':checked').toString());
     });
 }
-

@@ -1,10 +1,8 @@
 const mealAjaxUrl = "ui/meals/";
 
-const ctx = {
-    ajaxUrl: mealAjaxUrl
-};
-
 $(function () {
+    ctx.ajaxUrl = mealAjaxUrl;
+    ctx.updateTableFunc = getFilteredTable;
     makeEditable(
         $("#datatable").DataTable({
             "paging": false,
@@ -31,7 +29,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ]
         })
@@ -44,12 +42,16 @@ function clearFilter() {
 }
 
 function updateTableFilter() {
+    getFilteredTable();
+    successNoty("Filtered");
+}
+
+function getFilteredTable() {
     $.ajax({
         type: "GET",
         url: ctx.ajaxUrl + "filter",
         data: $("#filter").serialize()
     }).done(function (data) {
         ctx.datatableApi.clear().rows.add(data).draw();
-        successNoty("Filtered");
     });
 }
