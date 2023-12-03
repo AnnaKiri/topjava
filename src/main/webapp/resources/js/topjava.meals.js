@@ -37,3 +37,19 @@ $(function () {
         })
     );
 });
+
+function clearFilter() {
+    $("#filter").find(":input").val("");
+    updateTable();
+}
+
+function updateTableFilter() {
+    $.ajax({
+        type: "GET",
+        url: ctx.ajaxUrl + "filter",
+        data: $("#filter").serialize()
+    }).done(function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+        successNoty("Filtered");
+    });
+}
