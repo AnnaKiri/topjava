@@ -44,4 +44,28 @@ $(function () {
             ]
         })
     );
+
+    $(".enabled").click(function () {
+        enableStatusChange($(this));
+    })
 });
+
+function enableStatusChange(checkbox) {
+    let id = checkbox.closest('tr').attr("id");
+    let value = checkbox.prop('checked');
+
+    $.ajax({
+        type: "POST",
+        url: ctx.ajaxUrl + id + "/enable",
+        data: "enabled=" + value
+    }).done(function () {
+        if (value) {
+            successNoty("Record enabled");
+        } else {
+            successNoty("Record disabled");
+        }
+    });
+
+}
+
+

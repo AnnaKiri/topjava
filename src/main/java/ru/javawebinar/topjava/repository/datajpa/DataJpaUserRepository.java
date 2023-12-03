@@ -28,6 +28,11 @@ public class DataJpaUserRepository implements UserRepository {
     }
 
     @Override
+    public boolean setActiveStatus(int id, boolean enabled) {
+        return crudRepository.setActiveStatus(id, enabled) != 0;
+    }
+
+    @Override
     public User get(int id) {
         return crudRepository.findById(id).orElse(null);
     }
