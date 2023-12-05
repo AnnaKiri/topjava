@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.model.User;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,10 +63,10 @@ public class AdminRestController extends AbstractUserController {
         return super.getWithMeals(id);
     }
 
-    @PostMapping("/{id}/enable")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void setActiveStatus(@PathVariable int id,
-                                @RequestParam boolean enabled) {
-        super.setActiveStatus(id, enabled);
+                                @RequestBody Map<String, String> payload) {
+        super.setActiveStatus(id, Boolean.parseBoolean(payload.get("enabled")));
     }
 }

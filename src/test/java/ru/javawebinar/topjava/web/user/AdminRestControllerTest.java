@@ -65,8 +65,9 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void setActiveStatus() throws Exception {
         boolean newStatus = false;
-        perform(MockMvcRequestBuilders.post(REST_URL + USER_ID + "/enable")
-                .param("enabled", String.valueOf(newStatus)))
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"enabled\":\"" + newStatus + "\"}"))
                 .andExpect(status().isNoContent());
         assertEquals(userService.get(USER_ID).isEnabled(), newStatus);
     }

@@ -37,8 +37,8 @@ $(function () {
 });
 
 function clearFilter() {
-    $("#filter").find(":input").val("");
-    updateTable();
+    getFullTable();
+    document.getElementById("filter").reset();
 }
 
 function updateTableFilter() {
@@ -52,6 +52,6 @@ function getFilteredTable() {
         url: ctx.ajaxUrl + "filter",
         data: $("#filter").serialize()
     }).done(function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        updateTable(data);
     });
 }

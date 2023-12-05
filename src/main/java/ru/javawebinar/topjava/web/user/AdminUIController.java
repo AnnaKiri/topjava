@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,10 +34,10 @@ public class AdminUIController extends AbstractUserController {
         super.create(new User(null, name, email, password, Role.USER));
     }
 
-    @PostMapping("/{id}/enable")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void setActiveStatus(@PathVariable int id,
-                             @RequestParam boolean enabled) {
-        super.setActiveStatus(id, enabled);
+                                @RequestBody Map<String, String> payload) {
+        super.setActiveStatus(id, Boolean.parseBoolean(payload.get("enabled")));
     }
 }

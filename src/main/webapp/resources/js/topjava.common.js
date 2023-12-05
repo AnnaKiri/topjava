@@ -37,10 +37,14 @@ function deleteRow(id) {
     });
 }
 
-function updateTable() {
+function getFullTable() {
     $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        updateTable(data);
     });
+}
+
+function updateTable(data) {
+    ctx.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {

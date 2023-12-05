@@ -16,9 +16,9 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
 
     public void init() {
         map.clear();
-        put(user);
-        put(admin);
-        put(guest);
+        put(new User(user));
+        put(new User(admin));
+        put(new User(guest));
         counter.getAndSet(GUEST_ID + 1);
     }
 
@@ -27,6 +27,13 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
         return getCollection().stream()
                 .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .toList();
+    }
+
+    @Override
+    public boolean setActiveStatus(int id, boolean enabled) {
+        User user = map.get(id);
+        user.setEnabled(enabled);
+        return save(user) != null;
     }
 
     @Override

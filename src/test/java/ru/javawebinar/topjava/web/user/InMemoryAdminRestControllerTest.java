@@ -48,6 +48,12 @@ class InMemoryAdminRestControllerTest {
     }
 
     @Test
+    void setActiveStatus() throws Exception {
+        controller.setActiveStatus(USER_ID, false);
+        Assertions.assertFalse(repository.get(USER_ID).isEnabled());
+    }
+
+    @Test
     void deleteNotFound() {
         Assertions.assertThrows(NotFoundException.class, () -> controller.delete(NOT_FOUND));
     }
