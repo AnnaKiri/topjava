@@ -23,7 +23,8 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
-            form.find("input[name='" + key + "']").val(value);
+            let valueFixed = key === "dateTime" ? convertDateTimeFromIso(value) : value;
+            form.find("input[name='" + key + "']").val(valueFixed);
         });
         $('#editRow').modal();
     });
@@ -45,7 +46,17 @@ function updateTableByData(data) {
     ctx.datatableApi.clear().rows.add(data).draw();
 }
 
+function convertDateTimeFromIso(dateTime) {
+    return dateTime.substring(0, 16).replace('T', ' ');
+}
+
+function convertDateTimeToIso(dateTime) {
+    return dateTime.substring(0, 16).replace(' ', 'T');
+}
+
 function save() {
+    $("#dateTime").val(convertDateTimeToIso($("#dateTime").val()));
+
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
