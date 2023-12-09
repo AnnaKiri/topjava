@@ -55,8 +55,6 @@ function convertDateTimeToIso(dateTime) {
 }
 
 function save() {
-    $("#dateTime").val(convertDateTimeToIso($("#dateTime").val()));
-
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,

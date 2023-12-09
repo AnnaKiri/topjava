@@ -17,6 +17,11 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
+function saveMeal() {
+    $("#dateTime").val(convertDateTimeToIso($("#dateTime").val()));
+    save();
+}
+
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
