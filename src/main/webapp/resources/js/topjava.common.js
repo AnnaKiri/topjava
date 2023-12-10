@@ -23,8 +23,7 @@ function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
-            let valueFixed = key === "dateTime" ? convertDateTimeFromIso(value) : value;
-            form.find("input[name='" + key + "']").val(valueFixed);
+            form.find("input[name='" + key + "']").val(value);
         });
         $('#editRow').modal();
     });
@@ -44,14 +43,6 @@ function deleteRow(id) {
 
 function updateTableByData(data) {
     ctx.datatableApi.clear().rows.add(data).draw();
-}
-
-function convertDateTimeFromIso(dateTime) {
-    return dateTime.substring(0, 16).replace('T', ' ');
-}
-
-function convertDateTimeToIso(dateTime) {
-    return dateTime.substring(0, 16).replace(' ', 'T');
 }
 
 function save() {

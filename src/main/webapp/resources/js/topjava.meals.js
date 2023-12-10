@@ -17,10 +17,21 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
-function saveMeal() {
-    $("#dateTime").val(convertDateTimeToIso($("#dateTime").val()));
-    save();
-}
+$.ajaxSetup({
+    converters: {
+        "text json": function (data) {
+            let json = JSON.parse(data);
+            if (typeof json === 'object') {
+                $(json).each(function () {
+                    if (this.hasOwnProperty('dateTime')) {
+                        this.dateTime = this.dateTime.slice(0, 16).replace('T', ' ');
+                    }
+                });
+            }
+            return json;
+        }
+    }
+});
 
 $(function () {
     makeEditable(
@@ -34,12 +45,6 @@ $(function () {
             "columns": [
                 {
                     "data": "dateTime",
-                    "render": function (date, type, row) {
-                        if (type === "display") {
-                            return convertDateTimeFromIso(date);
-                        }
-                        return date;
-                    }
                 },
                 {
                     "data": "description"
@@ -76,23 +81,45 @@ $(function () {
         format: 'Y-m-d H:i'
     });
 
-    $('#startDate').datetimepicker({
+    let startDate = $('#startDate');
+    let endDate = $('#endDate');
+    startDate.datetimepicker({
         timepicker: false,
-        format: 'Y-m-d'
+        format: 'Y-m-d',
+        onShow: function () {
+            this.setOptions({
+                maxDate: endDate.val() ? endDate.val() : false
+            })
+        }
     });
-
-    $('#endDate').datetimepicker({
+    endDate.datetimepicker({
         timepicker: false,
-        format: 'Y-m-d'
+        format: 'Y-m-d',
+        onShow: function () {
+            this.setOptions({
+                minDate: startDate.val() ? startDate.val() : false
+            })
+        }
     });
 
-    $('#startTime').datetimepicker({
+    let startTime = $('#startTime');
+    let endTime = $('#endTime');
+    startTime.datetimepicker({
         datepicker: false,
-        format: 'H:i'
+        format: 'H:i',
+        onShow: function () {
+            this.setOptions({
+                maxTime: endTime.val() ? endTime.val() : false
+            })
+        }
     });
-
-    $('#endTime').datetimepicker({
+    endTime.datetimepicker({
         datepicker: false,
-        format: 'H:i'
+        format: 'H:i',
+        onShow: function () {
+            this.setOptions({
+                minTime: startTime.val() ? startTime.val() : false
+            })
+        }
     });
 });
