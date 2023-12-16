@@ -1,21 +1,31 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
+import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.validator.UserValidator;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {
+
+    private final UserValidator userValidator;
+    private final MessageSource messageSource;
+
+    @Autowired
+    public AdminUIController(UserValidator userValidator, MessageSource messageSource) {
+        this.userValidator = userValidator;
+        this.messageSource = messageSource;
+    }
 
     @Override
     @GetMapping
@@ -39,13 +49,7 @@ public class AdminUIController extends AbstractUserController {
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createOrUpdate(@Valid UserTo userTo, BindingResult result) {
-        if (result.hasErrors()) {
-            String errorDetails = result.getAllErrors()
-                    .stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining("; "));
-            throw new IllegalRequestDataException("Validation error: " + errorDetails);
-        }
+        ValidationUtil.checkUserAndThrowException(userValidator, userTo.getEmail(), result, messageSource);
         if (userTo.isNew()) {
             super.create(userTo);
         } else {
