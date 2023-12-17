@@ -100,6 +100,17 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void updateDuplicateEmail() throws Exception {
+        User updated = getUpdated();
+        updated.setEmail(guest.getEmail());
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(updated, updated.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         User newUser = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -118,6 +129,16 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void createNotValidData() throws Exception {
         User newUser = new User(null, null, null, "12", 5, false, new Date(), Collections.singleton(Role.USER));
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void createDuplicateEmail() throws Exception {
+        User newUser = new User(null, "newName", user.getEmail(), "newPassword", 5000, false, new Date(), Collections.singleton(Role.USER));
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(admin))

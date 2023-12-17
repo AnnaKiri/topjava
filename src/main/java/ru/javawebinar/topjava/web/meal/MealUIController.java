@@ -1,24 +1,34 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
+import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.validator.MealValidator;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/profile/meals", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealUIController extends AbstractMealController {
+
+    private final MealValidator mealValidator;
+    private final MessageSource messageSource;
+
+    @Autowired
+    public MealUIController(MealValidator mealValidator, MessageSource messageSource) {
+        this.mealValidator = mealValidator;
+        this.messageSource = messageSource;
+    }
 
     @Override
     @GetMapping
@@ -42,13 +52,7 @@ public class MealUIController extends AbstractMealController {
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void createOrUpdate(@Valid Meal meal, BindingResult result) {
-        if (result.hasErrors()) {
-            String errorDetails = result.getAllErrors()
-                    .stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining("; "));
-            throw new IllegalRequestDataException("Validation error: " + errorDetails);
-        }
+        ValidationUtil.checkMeal(mealValidator, meal, result, messageSource);
         if (meal.isNew()) {
             super.create(meal);
         } else {

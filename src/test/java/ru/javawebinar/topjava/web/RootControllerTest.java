@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +30,6 @@ class RootControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Disabled
     void getMeals() throws Exception {
         perform(get("/meals")
                 .with(userAuth(user)))
