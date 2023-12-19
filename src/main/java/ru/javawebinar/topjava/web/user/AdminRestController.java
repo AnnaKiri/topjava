@@ -1,15 +1,13 @@
 package ru.javawebinar.topjava.web.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.validator.UserValidator;
 
 import javax.validation.Valid;
@@ -21,13 +19,13 @@ import java.util.List;
 public class AdminRestController extends AbstractUserController {
 
     static final String REST_URL = "/rest/admin/users";
-    private final UserValidator userValidator;
-    private final MessageSource messageSource;
 
     @Autowired
-    public AdminRestController(UserValidator userValidator, MessageSource messageSource) {
-        this.userValidator = userValidator;
-        this.messageSource = messageSource;
+    private UserValidator userValidator;
+
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+        binder.addValidators(userValidator);
     }
 
     @Override
@@ -43,8 +41,7 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user, BindingResult result) {
-        ValidationUtil.checkUser(userValidator, user.getEmail(), result, messageSource);
+    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
         User created = super.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -61,8 +58,7 @@ public class AdminRestController extends AbstractUserController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody User user, BindingResult result, @PathVariable int id) {
-        ValidationUtil.checkUser(userValidator, user.getEmail(), result, messageSource);
+    public void update(@Valid @RequestBody User user, @PathVariable int id) {
         super.update(user, id);
     }
 

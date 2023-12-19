@@ -1,17 +1,15 @@
 package ru.javawebinar.topjava.web.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.validator.UserValidator;
+import ru.javawebinar.topjava.util.validator.UserToValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -22,13 +20,13 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 @RequestMapping(value = ProfileRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileRestController extends AbstractUserController {
     static final String REST_URL = "/rest/profile";
-    private final UserValidator userValidator;
-    private final MessageSource messageSource;
 
     @Autowired
-    public ProfileRestController(UserValidator userValidator, MessageSource messageSource) {
-        this.userValidator = userValidator;
-        this.messageSource = messageSource;
+    private UserToValidator userToValidator;
+
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+        binder.addValidators(userToValidator);
     }
 
     @GetMapping
@@ -44,8 +42,7 @@ public class ProfileRestController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo, BindingResult result) {
-        ValidationUtil.checkUser(userValidator, userTo.getEmail(), result, messageSource);
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         User created = super.create(userTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
@@ -54,8 +51,7 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody UserTo userTo, BindingResult result) {
-        ValidationUtil.checkUser(userValidator, userTo.getEmail(), result, messageSource);
+    public void update(@Valid @RequestBody UserTo userTo) {
         super.update(userTo, authUserId());
     }
 

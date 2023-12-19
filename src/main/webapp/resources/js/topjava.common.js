@@ -108,17 +108,16 @@ function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = jqXHR.responseJSON;
     failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.type + parseErrors(errorInfo.detail),
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.type + parseErrors(errorInfo.details),
         type: "error",
         layout: "bottomRight"
     });
     failedNote.show()
 }
 
-function parseErrors(errorInfo) {
+function parseErrors(errorsList) {
     let errorMessage = "";
-    const errors = errorInfo.split(";");
-    for (let error of errors) {
+    for (let error of errorsList) {
         errorMessage += "<br>" + (i18n[error] || error);
     }
     return errorMessage;

@@ -7,35 +7,36 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 @Component
-public class UserValidator implements Validator {
+public class UserToValidator implements Validator {
 
     private final UserService userService;
 
     @Autowired
-    public UserValidator(UserService userService) {
+    public UserToValidator(UserService userService) {
         this.userService = userService;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return User.class.isAssignableFrom(clazz);
+        return UserTo.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        User user = (User) target;
+        UserTo userTo = (UserTo) target;
 
-        if (!StringUtils.hasLength(user.getEmail())) {
+        if (!StringUtils.hasLength(userTo.getEmail())) {
             return;
         }
 
         try {
-            User userByEmail = userService.getByEmail(user.getEmail());
-            if (user.getId() == null || !userByEmail.getId().equals(user.getId())) {
-                errors.rejectValue("email", "Duplicate.user.email");
+            User userByEmail = userService.getByEmail(userTo.getEmail());
+            if (userTo.getId() == null || !userByEmail.getId().equals(userTo.getId())) {
+                errors.rejectValue("email", "Duplicate.userTo.email");
             }
         } catch (NotFoundException ignored) {
 

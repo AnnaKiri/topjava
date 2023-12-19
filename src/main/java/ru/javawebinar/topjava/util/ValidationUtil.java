@@ -1,24 +1,15 @@
 package ru.javawebinar.topjava.util;
 
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import ru.javawebinar.topjava.HasId;
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.util.validator.MealValidator;
-import ru.javawebinar.topjava.util.validator.UserValidator;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import javax.validation.*;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -92,37 +83,5 @@ public class ValidationUtil {
                         .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
                         .collect(Collectors.joining("<br>"))
         );
-    }
-
-    public static void checkUser(UserValidator userValidator,
-                                 String email,
-                                 BindingResult result,
-                                 MessageSource messageSource) throws IllegalRequestDataException {
-        userValidator.validate(email, result);
-        checkBindingResultAndThrowException(result, messageSource);
-    }
-
-    public static void checkMeal(MealValidator mealValidator,
-                                 Meal meal,
-                                 BindingResult result,
-                                 MessageSource messageSource) throws IllegalRequestDataException {
-        Meal newMeal = new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories());
-        User user = new User();
-        user.setId(SecurityUtil.authUserId());
-        newMeal.setUser(user);
-        mealValidator.validate(newMeal, result);
-        checkBindingResultAndThrowException(result, messageSource);
-    }
-
-    private static void checkBindingResultAndThrowException(BindingResult result, MessageSource messageSource) throws IllegalRequestDataException {
-        if (result.hasErrors()) {
-            StringBuilder errorDetails = new StringBuilder();
-            List<FieldError> errors = result.getFieldErrors();
-            for (FieldError error : errors) {
-                String errorMessage = messageSource.getMessage(error, LocaleContextHolder.getLocale());
-                errorDetails.append(errorMessage).append(";");
-            }
-            throw new IllegalRequestDataException(errorDetails.toString());
-        }
     }
 }
