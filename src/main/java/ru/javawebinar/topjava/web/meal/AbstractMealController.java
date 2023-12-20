@@ -27,7 +27,7 @@ public abstract class AbstractMealController {
     private MealService service;
 
     @Autowired
-    protected MealValidator mealValidator;
+    private MealValidator mealValidator;
 
     @InitBinder
     private void initBinder(WebDataBinder binder) {
