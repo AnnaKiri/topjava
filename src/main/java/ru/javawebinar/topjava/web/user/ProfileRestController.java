@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.util.validator.UserToValidator;
+import ru.javawebinar.topjava.util.validator.UserValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -22,11 +22,11 @@ public class ProfileRestController extends AbstractUserController {
     static final String REST_URL = "/rest/profile";
 
     @Autowired
-    private UserToValidator userToValidator;
+    private UserValidator userValidator;
 
     @InitBinder
     private void initBinder(WebDataBinder binder) {
-        binder.addValidators(userToValidator);
+        binder.addValidators(userValidator);
     }
 
     @GetMapping

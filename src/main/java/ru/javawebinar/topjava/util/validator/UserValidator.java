@@ -6,39 +6,53 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.service.UserService;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.to.UserTo;
 
 @Component
 public class UserValidator implements Validator {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserValidator(UserService userService) {
-        this.userService = userService;
+    public UserValidator(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return User.class.isAssignableFrom(clazz);
+        return User.class.isAssignableFrom(clazz) || UserTo.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        User user = (User) target;
+        Integer id = null;
+        String email = null;
+        String errorCode = null;
 
-        if (!StringUtils.hasLength(user.getEmail())) {
+        if (target instanceof User user) {
+            email = user.getEmail();
+            id = user.getId();
+            errorCode = "Duplicate.user.email";
+        } else if (target instanceof UserTo userTo) {
+            email = userTo.getEmail();
+            id = userTo.getId();
+            errorCode = "Duplicate.userTo.email";
+        }
+
+        if (!StringUtils.hasLength(email)) {
             return;
         }
 
-        try {
-            User userByEmail = userService.getByEmail(user.getEmail());
-            if (user.getId() == null || !userByEmail.getId().equals(user.getId())) {
-                errors.rejectValue("email", "Duplicate.user.email");
-            }
-        } catch (NotFoundException ignored) {
+        User userByEmail = userRepository.getByEmail(email);
+        if (userByEmail == null) {
+            return;
+        }
 
+        boolean newUser = id == null;
+        boolean emailBelongsUpdatedUser = id != null && id.equals(userByEmail.getId());
+        if (newUser || !emailBelongsUpdatedUser) {
+            errors.rejectValue("email", errorCode);
         }
     }
 }

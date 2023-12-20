@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.SessionStatus;
 import ru.javawebinar.topjava.to.UserTo;
-import ru.javawebinar.topjava.util.validator.UserToValidator;
+import ru.javawebinar.topjava.util.validator.UserValidator;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import javax.validation.Valid;
@@ -21,11 +21,11 @@ import javax.validation.Valid;
 public class ProfileUIController extends AbstractUserController {
 
     @Autowired
-    private UserToValidator userToValidator;
+    private UserValidator userValidator;
 
     @InitBinder
     private void initBinder(WebDataBinder binder) {
-        binder.addValidators(userToValidator);
+        binder.addValidators(userValidator);
     }
 
     @GetMapping
